@@ -1,20 +1,22 @@
+
 var loadState = {
     
     //preload all assets for the whole game
-    prelaod: function() {
+    preload: function() {
         
         //load the loading label
-        var loadingLabel = game.add.text(80, 150, 'loading...', {font: '30px Courier', fill: '#ffffff'});
+        var loadingLabel = this.game.add.text(80, 150, 'loading...', {font: '30px Courier', fill: '#ffffff'});
         
         
         //loading all assets
-        game.load.image('player', 'assets/test/player.png');
-        game.load.image('win', 'assets/test/win.png');
+        this.game.load.image('player', '../assets/player.png');
+        this.game.load.image('win', '../assets/win.png');
+        this.game.load.image('floor', '../assets/floor.png');
     },
     
     create: function() {
         
         //call menu state
-        game.state.start('menu');
+        this.game.state.start('menu');
     }
 };
