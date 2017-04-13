@@ -10,11 +10,11 @@ var menuState = {
         var Wkey = this.game.input.keyboard.addKey(Phaser.Keyboard.W);
         
         // calling start function when key is pressed
-        Wkey.onDown.addOnce(this.start, this);
+        Wkey.onDown.addOnce(this.startIntro, this);
         
     },
     
-    start: function() {
-        this.game.state.start('play');
+    startIntro: function() {
+        this.game.state.start('gameIntro');
     }
-}
+};

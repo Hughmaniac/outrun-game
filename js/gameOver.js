@@ -12,4 +12,4 @@ var gameOverState = {
     restart: function() {
         this.game.state.start('menu');
     }
-}
+};

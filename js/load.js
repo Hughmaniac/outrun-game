@@ -12,6 +12,7 @@ var loadState = {
         this.game.load.image('player', '../assets/player.png');
         this.game.load.image('win', '../assets/win.png');
         this.game.load.image('floor', '../assets/floor.png');
+        this.game.load.image('platform', '../assets/platform.png');
     },
     
     create: function() {
