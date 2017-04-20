@@ -7,7 +7,7 @@
  var gameSpeedPlatform = 150;
  var platformWidth;
  var masterTimer;
- var platformSpawnRate = 2000;
+ var platformSpawnRate = 1800;
 
  var playState = {
 
@@ -22,7 +22,7 @@
          this.game.camera.flash(0x000000, 1000);
 
          var nameLabel = this.game.add.text(80, 80, 'gameplay', {
-             font: '50px Arial',
+             font: '50px Hellovetica',
              fill: '#ffffff'
          });
 
@@ -31,19 +31,24 @@
          this.game.physics.startSystem(Phaser.Physics.ARCADE);
 
          // KEYBINDINGS
-         jumpKey = this.game.input.keyboard.addKey(Phaser.Keyboard.W);
-         rightKey = this.game.input.keyboard.addKey(Phaser.Keyboard.D);
-         leftKey = this.game.input.keyboard.addKey(Phaser.Keyboard.A);
+         cursors = this.game.input.keyboard.createCursorKeys();
 
          //Get the dimensions of the tile we are using
          this.tileWidth = this.game.cache.getImage('platform').width;
          this.tileHeight = this.game.cache.getImage('platform').height;
 
+         // WORLD BOUNDS SETTINGS
+
+
+
+
+
+
          // PLATFORM GENERATION
          this.platforms = this.game.add.group();
          this.platforms.enableBody = true;
          this.platforms.createMultiple(250, 'platform');
-         this.timer = this.game.time.events.loop(platformSpawnRate, this.addPlatform, this);
+         this.timer = this.game.time.events.loop(2000, this.addPlatform, this);
          this.platforms.setAll('body.checkCollision.up', true);
          this.platforms.setAll('body.checkCollision.down', false);
          this.platforms.setAll('body.checkCollision.left', false);
@@ -52,12 +57,15 @@
          // SPRITE INITIALIZATION
          player = this.game.add.sprite(16, 0, 'player');
          win = this.game.add.sprite(256, gameHeight - 256, 'win');
-         initPlatform = this.game.add.sprite(0,20, 'platform');
+         initPlatform = this.game.add.sprite(0, 20, 'platform');
+
+         leftWall = this.game.add.sprite(-9, 0);
+         rightWall = this.game.add.sprite(gameWidth - 1, 0);
+         bottomWall = this.game.add.sprite(0, gameHeight);
 
 
          // SPRITE PHYSICS SETTINGS
-         this.game.physics.arcade.enable([player, win, initPlatform]);
-         player.body.collideWorldBounds = true;
+         this.game.physics.arcade.enable([player, win, initPlatform, leftWall, rightWall, bottomWall]);
          player.body.gravity.y = 1400;
          player.body.maxVelocity.y = 500;
          win.body.allowGravity = false;
@@ -65,37 +73,55 @@
          initPlatform.body.velocity.y = 100;
          initPlatform.body.immovable = true;
 
+         // WORLD INVISIBLE WALLS
+
+         leftWall.scale.x = 10;
+         leftWall.scale.y = gameHeight;
+         leftWall.body.immovable = true;
+
+         rightWall.scale.x = 10;
+         rightWall.scale.y = gameHeight;
+         rightWall.body.immovable = true;
+
+         bottomWall.scale.x = gameWidth;
+         bottomWall.scale.y = 10;
+         bottomWall.body.immovable = true;
+
+
+
          // GAME TIMER FOR SPEED SHIFTS
-         this.game.time.events.add(Phaser.Timer.SECOND * 2, this.speed1, this);
-         this.game.time.events.add(Phaser.Timer.SECOND * 3, this.speed2, this);
-         this.game.time.events.add(Phaser.Timer.SECOND * 4, this.speed3, this);
-         this.game.time.events.add(Phaser.Timer.SECOND * 5, this.speed4, this);
+         this.game.time.events.add(Phaser.Timer.SECOND * 15, this.speed1, this);
+         this.game.time.events.add(Phaser.Timer.SECOND * 30, this.speed2, this);
+         this.game.time.events.add(Phaser.Timer.SECOND * 45, this.speed3, this);
+         this.game.time.events.add(Phaser.Timer.SECOND * 60, this.speed4, this);
 
      },
 
      update: function () {
          console.log(gameSpeedPlatform);
          console.log(platformSpawnRate);
-         
+
          this.game.physics.arcade.collide(player, this.platforms);
          this.game.physics.arcade.collide(player, initPlatform);
+         this.game.physics.arcade.collide(player, leftWall);
+         this.game.physics.arcade.collide(player, rightWall);
 
 
          // when player and win sprite overlap, the win function is called.
-         this.game.physics.arcade.overlap(player, win, this.gameOver, null, this);
+         this.game.physics.arcade.overlap(player, bottomWall, this.gameOver, null, this);
 
 
          // X AXIS MOVEMENT
-         if (leftKey.isDown) {
+         if (cursors.left.isDown) {
              player.body.velocity.x = -400;
-         } else if (rightKey.isDown) {
+         } else if (cursors.right.isDown) {
              player.body.velocity.x = 400;
          } else {
              player.body.velocity.x = 0;
          }
 
          // JUMP COMMAND
-         if (jumpKey.isDown) {
+         if (cursors.up.isDown) {
              if (player.body.touching.down && jumpTimer === 0) {
                  // jump is allowed to start
                  jumpTimer = 1;
@@ -109,7 +135,7 @@
              // jump button not being pressed, reset jump timer
              jumpTimer = 0;
          }
-         
+
          console.log(jumpTimer);
      },
 
@@ -159,28 +185,27 @@
 
      speed1: function () {
          gameSpeedPlatform = 200;
-         platformSpawnRate = 1500;
+         this.timer.delay = 1500;
+
      },
 
      speed2: function () {
          gameSpeedPlatform = 250;
-         platformSpawnRate = 1000;
+         this.timer.delay = 1000;
 
      },
 
      speed3: function () {
          gameSpeedPlatform = 300;
-         platformSpawnRate = 500;
+         this.timer.delay = 500;
 
      },
 
      speed4: function () {
          gameSpeedPlatform = 400;
-         platformSpawnRate = 200;
+         this.timer.delay = 200;
 
      },
-
-
 
      gameOver: function () {
          this.game.state.start('gameOver');

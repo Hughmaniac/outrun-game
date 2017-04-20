@@ -1,5 +1,5 @@
-var gameWidth = 640;
-var gameHeight = 480;
+var gameWidth = 512;
+var gameHeight = 448;
 
 
 $(document).ready( function() {

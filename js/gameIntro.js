@@ -1,24 +1,23 @@
 
+var cursors;
 
 var gameIntroState = {
 
     preload: function () {
-
-
+        
 
     },
 
     create: function () {
 
         var nameLabel = this.game.add.text(80, 80, 'Intro', {
-            font: '50px Arial',
+            font: '50px Hellovetica',
             fill: '#ffffff'
         });
 
         //KEYBINDINGS
-        jumpKey = this.game.input.keyboard.addKey(Phaser.Keyboard.W);
-        rightKey = this.game.input.keyboard.addKey(Phaser.Keyboard.D);
-        leftKey = this.game.input.keyboard.addKey(Phaser.Keyboard.A);
+        
+        cursors = this.game.input.keyboard.createCursorKeys();
 
 
         // SPRITE INITIALIZATION
@@ -54,16 +53,16 @@ var gameIntroState = {
         this.game.physics.arcade.collide(floor, player);
 
         // X AXIS MOVEMENT
-        if (leftKey.isDown) {
+        if (cursors.left.isDown) {
             player.body.velocity.x = -400;
-        } else if (rightKey.isDown) {
+        } else if (cursors.right.isDown) {
             player.body.velocity.x = 400;
         } else {
             player.body.velocity.x = 0;
         }
 
         // JUMP COMMAND
-        if (jumpKey.isDown) {
+        if (cursors.up.isDown) {
             if (player.body.touching.down && jumpTimer === 0) {
                 // jump is allowed to start
                 jumpTimer = 1;

@@ -13,6 +13,9 @@ var loadState = {
         this.game.load.image('win', '../assets/win.png');
         this.game.load.image('floor', '../assets/floor.png');
         this.game.load.image('platform', '../assets/platform.png');
+        
+        // fonts        
+        this.game.load.bitmapFont('PressStart', '../assets/PressStart.png', '../assets/PressStart.xml');
     },
     
     create: function() {
