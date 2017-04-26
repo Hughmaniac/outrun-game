@@ -1,10 +1,10 @@
 
 var cursors;
-
-var gameIntroState = {
+var run, idle1;
+gameIntroState = {
 
     preload: function () {
-        
+
 
     },
 
@@ -16,19 +16,31 @@ var gameIntroState = {
         });
 
         //KEYBINDINGS
-        
+
         cursors = this.game.input.keyboard.createCursorKeys();
 
 
         // SPRITE INITIALIZATION
-        player = this.game.add.sprite(16, gameHeight - 100, 'player');
+        player = this.game.add.sprite(16, gameHeight - 100, 'playerSprite');
         win = this.game.add.sprite(256, gameHeight - 256, 'win');
         floor = this.game.add.sprite(0, gameHeight - 50, 'floor');
+
+        // SPRITE SETTINGS
+        player.anchor.setTo(.5, .5);
+        player.scale.setTo(2,2);
+
+        // SPRITE ANIMATIONS
+
+        player.animations.add('playerIdle', [0, 1, 2, 3]);
+        player.animations.add('playerRunRight', [8, 9, 10, 11, 12, 13, 14, 15]);
+        player.animations.add('playerRunLeft', [23, 22, 21, 20, 19, 18, 17, 16]);
+
+        player.animations.play('playerIdle', 2, true);
 
 
         // SPRITE PHYSICS SETTINGS
         this.game.physics.arcade.enable([player, floor, win]);
-        
+
         player.body.collideWorldBounds = true;
         player.body.gravity.y = 1400;
         player.body.maxVelocity.y = 500;
@@ -44,9 +56,6 @@ var gameIntroState = {
 
     update: function () {
 
-     
-
-
         // when player and win sprite overlap, the win function is called.
         this.game.physics.arcade.overlap(player, win, this.fade, null, this);
 
@@ -54,11 +63,18 @@ var gameIntroState = {
 
         // X AXIS MOVEMENT
         if (cursors.left.isDown) {
-            player.body.velocity.x = -400;
+            player.body.velocity.x = -300;
+            player.animations.play('playerRunLeft', 15, true);
+
+
         } else if (cursors.right.isDown) {
-            player.body.velocity.x = 400;
+            player.body.velocity.x = 300;
+            player.animations.play('playerRunRight', 15, true);
+
         } else {
             player.body.velocity.x = 0;
+            player.animations.play('playerIdle', 2, true);
+
         }
 
         // JUMP COMMAND
@@ -81,9 +97,9 @@ var gameIntroState = {
 
     render: function () {
 
-        // CAMERA DEBUG STATS
-        this.game.debug.cameraInfo(this.game.camera, 32, 32);
-        this.game.debug.spriteCoords(player, 32, 500);
+        //        // CAMERA DEBUG STATS
+        //        this.game.debug.cameraInfo(this.game.camera, 32, 32);
+        //        this.game.debug.spriteCoords(player, 32, 500);
     },
 
 

@@ -1,4 +1,5 @@
- var player, floor, win, jumpButton, platform, platforms;
+
+var player, floor, win, jumpButton, platform, platforms;
  var total = 0;
  var jumpKey;
  var leftKey;
@@ -9,7 +10,12 @@
  var masterTimer;
  var platformSpawnRate = 1800;
 
- var playState = {
+ var score = 0;
+ var scoreText;
+
+var music;
+
+playState = {
 
      preload: function () {
 
@@ -25,6 +31,10 @@
              font: '50px Hellovetica',
              fill: '#ffffff'
          });
+         music = this.game.add.audio('nightcall');
+         music.loop = true;
+         music.play();
+         
 
 
          //Enable the Arcade physics system
@@ -36,13 +46,9 @@
          //Get the dimensions of the tile we are using
          this.tileWidth = this.game.cache.getImage('platform').width;
          this.tileHeight = this.game.cache.getImage('platform').height;
-
-         // WORLD BOUNDS SETTINGS
-
-
-
-
-
+         
+         //PLATFORM SPEED RESET
+         gameSpeedPlatform = 150;
 
          // PLATFORM GENERATION
          this.platforms = this.game.add.group();
@@ -55,13 +61,21 @@
          this.platforms.setAll('body.checkCollision.right', false);
 
          // SPRITE INITIALIZATION
-         player = this.game.add.sprite(16, 0, 'player');
+         player = this.game.add.sprite(16, 0, 'playerSprite');
          win = this.game.add.sprite(256, gameHeight - 256, 'win');
          initPlatform = this.game.add.sprite(0, 20, 'platform');
-
-         leftWall = this.game.add.sprite(-9, 0);
+         leftWall = this.game.add.sprite(0, 0);
          rightWall = this.game.add.sprite(gameWidth - 1, 0);
          bottomWall = this.game.add.sprite(0, gameHeight);
+
+         // SPRITE SETTINGS
+         player.anchor.setTo(.5, .5);
+
+         // SPRITE ANIMATIONS
+         player.animations.add('playerIdle', [0, 1, 2, 3]);
+         player.animations.add('playerRunRight', [8, 9, 10, 11, 12, 13, 14, 15]);
+         player.animations.add('playerRunLeft', [23, 22, 21, 20, 19, 18, 17, 16]);
+         player.animations.play('playerIdle', 10, true);
 
 
          // SPRITE PHYSICS SETTINGS
@@ -74,12 +88,11 @@
          initPlatform.body.immovable = true;
 
          // WORLD INVISIBLE WALLS
-
-         leftWall.scale.x = 10;
+         leftWall.scale.x = 1;
          leftWall.scale.y = gameHeight;
          leftWall.body.immovable = true;
 
-         rightWall.scale.x = 10;
+         rightWall.scale.x = 1;
          rightWall.scale.y = gameHeight;
          rightWall.body.immovable = true;
 
@@ -94,12 +107,26 @@
          this.game.time.events.add(Phaser.Timer.SECOND * 30, this.speed2, this);
          this.game.time.events.add(Phaser.Timer.SECOND * 45, this.speed3, this);
          this.game.time.events.add(Phaser.Timer.SECOND * 60, this.speed4, this);
+         
+         // RESET SCORE
+         score = 0;
+
+         // SCORE KEEPER
+         scoreText = this.game.add.bitmapText(gameWidth / 2, 20, "PressStart", 'score: 0', 15);
+         scoreText.anchor.set(0.5);
+
+
+
+
+         // FOR DEBUGGING
+//         player.body.collideWorldBounds = true;
 
      },
 
      update: function () {
-         console.log(gameSpeedPlatform);
-         console.log(platformSpawnRate);
+         //         console.log(gameSpeedPlatform);
+         //         console.log(platformSpawnRate);
+         console.log(leftWall.scale.x);
 
          this.game.physics.arcade.collide(player, this.platforms);
          this.game.physics.arcade.collide(player, initPlatform);
@@ -109,16 +136,25 @@
 
          // when player and win sprite overlap, the win function is called.
          this.game.physics.arcade.overlap(player, bottomWall, this.gameOver, null, this);
-
+         this.game.physics.arcade.overlap(player, bottomWall, this.recordScore, null, this);
 
          // X AXIS MOVEMENT
          if (cursors.left.isDown) {
              player.body.velocity.x = -400;
+             player.animations.play('playerRunLeft', 20, true);
+
          } else if (cursors.right.isDown) {
              player.body.velocity.x = 400;
+             player.animations.play('playerRunRight', 20, true);
+
          } else {
              player.body.velocity.x = 0;
+             player.animations.play('playerIdle', 10, true);
+
          }
+         // COUNT UP SCOREKEEPER
+         score += 1;
+         scoreText.text = 'Score: ' + score;
 
          // JUMP COMMAND
          if (cursors.up.isDown) {
@@ -135,8 +171,6 @@
              // jump button not being pressed, reset jump timer
              jumpTimer = 0;
          }
-
-         console.log(jumpTimer);
      },
 
      addTile: function (x, y) {
@@ -174,9 +208,11 @@
          //         this.game.debug.cameraInfo(this.game.camera, 32, 32);
          //         this.game.debug.spriteCoords(player, 32, 500);
          //
-         //         // BOUNDING BOX DEBUG
-         //         this.game.debug.body(player);
-         //         this.game.debug.body(this.platforms);
+         // BOUNDING BOX DEBUG
+         this.game.debug.body(player);
+         this.game.debug.body(this.platforms);
+         this.game.debug.body(leftWall);
+         this.game.debug.body(rightWall);
      },
 
      getRandomInt: function () {
@@ -205,6 +241,10 @@
          gameSpeedPlatform = 400;
          this.timer.delay = 200;
 
+     },
+     
+     recordScore : function () {
+         recordedScore = score;
      },
 
      gameOver: function () {

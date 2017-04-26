@@ -1,4 +1,6 @@
-var bootState = {
+
+bootState = {
+    
 
     // Preload small assets for the loading screen
     preload: function () {
@@ -15,7 +17,7 @@ var bootState = {
     },
 
     create: function () {
-        this.game.stage.backgroundColor = '#124184';
+        this.game.stage.backgroundColor = '#555';
         this.game.physics.startSystem(Phaser.Physics.ARCADE);
         
         this.game.state.start('load');

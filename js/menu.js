@@ -1,4 +1,4 @@
-var menuState = {
+menuState = {
     create: function() {
         
         var nameLabel = this.game.add.text(80, 80, 'Test game', {font : '50px "V5 Xtender"', fill: '#ffffff'});
