@@ -1,4 +1,3 @@
-
 var cursors;
 var run, idle1;
 gameIntroState = {
@@ -21,13 +20,25 @@ gameIntroState = {
 
 
         // SPRITE INITIALIZATION
-        player = this.game.add.sprite(16, gameHeight - 100, 'playerSprite');
-        win = this.game.add.sprite(256, gameHeight - 256, 'win');
-        floor = this.game.add.sprite(0, gameHeight - 50, 'floor');
+
+
+        BG = this.game.add.sprite(0, 0, 'stagingBG');
+        scaffold = this.game.add.sprite(20, 214, 'scaffoldPlatform');
+        fire = this.game.add.sprite(174, 120, 'firePlatform');
+        player = this.game.add.sprite(16, 200, 'playerSprite');
+        car = this.game.add.sprite(20, 348, 'car');
+        win = this.game.add.sprite(gameWidth - 50, gameHeight - 256, 'win');
+
+        bottomWall = this.game.add.sprite(0, gameHeight - 50);
 
         // SPRITE SETTINGS
+        player.scale.setTo(2, 2);
         player.anchor.setTo(.5, .5);
-        player.scale.setTo(2,2);
+
+        BG.scale.setTo(2, 2);
+        car.scale.setTo(2, 2);
+        scaffold.scale.setTo(2);
+        fire.scale.setTo(2);
 
         // SPRITE ANIMATIONS
 
@@ -38,16 +49,30 @@ gameIntroState = {
         player.animations.play('playerIdle', 2, true);
 
 
-        // SPRITE PHYSICS SETTINGS
-        this.game.physics.arcade.enable([player, floor, win]);
+        // SPRITE PHYSICS/BODY SETTINGS
+        this.game.physics.arcade.enable([player, win, bottomWall, fire, scaffold]);
 
         player.body.collideWorldBounds = true;
         player.body.gravity.y = 1400;
         player.body.maxVelocity.y = 500;
-        floor.body.allowGravity = false;
-        floor.body.immovable = true;
+        player.body.setSize(30, 50);
+
         win.body.allowGravity = false;
         win.body.immovable = true;
+
+        bottomWall.scale.x = gameWidth;
+        bottomWall.scale.y = 50;
+        bottomWall.body.immovable = true;
+        scaffold.body.immovable = true;
+        fire.body.immovable = true;
+
+        scaffold.body.checkCollision.down = false;
+        scaffold.body.checkCollision.left = false;
+        scaffold.body.checkCollision.right = false;
+        fire.body.checkCollision.down = false;
+        fire.body.checkCollision.left = false;
+        fire.body.checkCollision.right = false;
+
 
         //CAMERA INITIAL POSITION
         this.game.camera.y = gameHeight - 480;
@@ -59,7 +84,9 @@ gameIntroState = {
         // when player and win sprite overlap, the win function is called.
         this.game.physics.arcade.overlap(player, win, this.fade, null, this);
 
-        this.game.physics.arcade.collide(floor, player);
+        this.game.physics.arcade.collide(bottomWall, player);
+        this.game.physics.arcade.collide(scaffold, player);
+        this.game.physics.arcade.collide(fire, player);
 
         // X AXIS MOVEMENT
         if (cursors.left.isDown) {
@@ -100,6 +127,8 @@ gameIntroState = {
         //        // CAMERA DEBUG STATS
         //        this.game.debug.cameraInfo(this.game.camera, 32, 32);
         //        this.game.debug.spriteCoords(player, 32, 500);
+
+        this.game.debug.body(player);
     },
 
 
