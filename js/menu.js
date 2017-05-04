@@ -6,6 +6,9 @@ var titlePosition = -92;
 menuState = {
     create: function() {
         
+       
+
+        
         // adding Key press to a variable
         var SPACEkey = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
         
@@ -29,6 +32,12 @@ menuState = {
         t.alpha = 1;
         
         this.game.time.events.loop(Phaser.Timer.SECOND, this.blinkText, this);
+       
+        // MUSIC LOAD & PLAY
+        menuMusic = this.game.add.audio('nightcall');
+        menuMusic.loop = true;
+        menuMusic.play();
+        
     },
     update: function() {
         
@@ -37,7 +46,7 @@ menuState = {
         title.position.y = titlePosition;
         
         if(scrollPosition <= 0 && scrollPosition > -392){
-        scrollPosition -=.5;
+        scrollPosition -=1;
         } else {
             scrollPosition = -392;
         }

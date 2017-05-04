@@ -21,9 +21,9 @@ loadState = {
 
         //Load SoundFiles
         this.game.load.audio('nightcall', '../assets/sound/Nightcall.mp3');
-
-
-
+        this.game.load.audio('deviance','../assets/sound/Deviance.mp3')
+        this.game.load.audio('powerMove','../assets/sound/PowerMoveAlt.mp3')
+        
         // fonts        
         this.game.load.bitmapFont('PressStart', '../assets/PressStart.png', '../assets/PressStart.xml');
         this.game.load.bitmapFont('PixelOperator', '../assets/pixelOperator.png', '../assets/pixelOperator.xml');

@@ -21,7 +21,6 @@ gameIntroState = {
         fire = this.game.add.sprite(174, 120, 'firePlatform');
         player = this.game.add.sprite(16, 200, 'playerSprite');
         car = this.game.add.sprite(20, 348, 'car');
-        win = this.game.add.sprite(gameWidth - 50, gameHeight - 256, 'win');
         bottomWall = this.game.add.sprite(0, gameHeight - 50);
 
         // SPRITE SETTINGS
@@ -46,15 +45,12 @@ gameIntroState = {
 
 
         // SPRITE PHYSICS/BODY SETTINGS
-        this.game.physics.arcade.enable([player, win, bottomWall, fire, scaffold]);
+        this.game.physics.arcade.enable([player, bottomWall, fire, scaffold]);
 
         player.body.collideWorldBounds = true;
         player.body.gravity.y = 3000;
         player.body.maxVelocity.y = 3000;
         player.body.setSize(30, 50, 10, 0);
-
-        win.body.allowGravity = false;
-        win.body.immovable = true;
 
         bottomWall.scale.x = gameWidth;
         bottomWall.scale.y = 50;
@@ -76,10 +72,8 @@ gameIntroState = {
     },
 
     update: function () {
-
-        // when player and win sprite overlap, the win function is called.
-        this.game.physics.arcade.overlap(player, win, this.fade, null, this);
-
+        // when player and fire sprite overlap, the win function is called.
+        this.game.physics.arcade.collide(player, fire, this.fade, null, this);
         this.game.physics.arcade.collide(bottomWall, player);
         this.game.physics.arcade.collide(scaffold, player);
         this.game.physics.arcade.collide(fire, player);
@@ -172,9 +166,12 @@ gameIntroState = {
     fade: function () {
         this.game.camera.fade(0x000000, 1000);
         player.body.immovable = true;
+        player.body.velocity = 0;
         this.game.time.events.add(Phaser.Timer.SECOND * 1.5, this.start, this).autoDestroy = true;
+        menuMusic.stop();
     },
     start: function () {
+        
         this.game.state.start('play');
     }
 

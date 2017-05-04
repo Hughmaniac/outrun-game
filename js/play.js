@@ -19,7 +19,7 @@ playState = {
         this.game.camera.flash(0x000000, 1000);
 
         // MUSIC LOAD & PLAY
-        music = this.game.add.audio('nightcall');
+        music = this.game.add.audio('deviance');
         music.loop = true;
         music.play();
 
@@ -268,6 +268,10 @@ playState = {
         //SPEED OF BACKGROUND
         backgroundSpeed = 1.66;
         levelText.text = 'Level: 2';
+        music.stop();
+        music = this.game.add.audio('powerMove');
+        music.loop = true;
+        music.play();
     },
 
     // PARAMETERS FOR LEVEL 3
