@@ -1,10 +1,10 @@
+var timer;
+var titleTrigger = false;
+var scrollPosition = 0;
+var titleAlpha = 0;
+var titlePosition = -92;
 menuState = {
     create: function() {
-        
-        var nameLabel = this.game.add.text(80, 80, 'Test game', {font : '50px "V5 Xtender"', fill: '#ffffff'});
-        
-        
-        var startLabel = this.game.add.text(80, this.game.world.height-80, 'press SPACE to start', {font : '25px Hellovetica', fill: '#ffffff'});
         
         // adding Key press to a variable
         var SPACEkey = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
@@ -12,10 +12,55 @@ menuState = {
         // calling start function when key is pressed
         SPACEkey.onDown.addOnce(this.startIntro, this);
         
-        var t = this.game.add.bitmapText( this.game.world.centerX, 200, "PressStart", "Test Game", 32);
+        menuBG = this.game.add.sprite(0,0,'mainMenuBG');
+        menuBG.scale.setTo(2);
+        menuBG.animations.add('bgPlay', [0, 1], 2, true);
+        menuBG.animations.play('bgPlay');
+        
+        title = this.game.add.sprite(0,10,'title');
+        title.scale.setTo(2);
+        title.alpha = titleAlpha;
+        title.position.y = titlePosition;
+        
+        t = this.game.add.bitmapText( this.game.world.centerX, gameHeight - 50, "PixelOperator", "Press SPACEBAR to begin", 32);
         t.align = "center";
         t.anchor.setTo(0.5, 0);
         t.scale.set(1);
+        t.alpha = 1;
+        
+        this.game.time.events.loop(Phaser.Timer.SECOND, this.blinkText, this);
+    },
+    update: function() {
+        
+        menuBG.position.y = scrollPosition ;
+        title.alpha = titleAlpha;
+        title.position.y = titlePosition;
+        
+        if(scrollPosition <= 0 && scrollPosition > -392){
+        scrollPosition -=.5;
+        } else {
+            scrollPosition = -392;
+        }
+        if(scrollPosition < -391){
+            titleTrigger = true;
+        }
+        if(titleTrigger === true){
+            titleAlpha += .1;
+            titlePosition += 10;
+        }
+        if(titlePosition >= 20){
+            titlePosition = 20;
+        }
+        if(titleAlpha >= 1){
+            titleAlpha = 1;
+        }
+    },
+    blinkText: function() {
+        if(t.alpha == 1){
+            t.alpha = 0;
+        } else {
+            t.alpha = 1;
+        }
     },
     
     startIntro: function() {

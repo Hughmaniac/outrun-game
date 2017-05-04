@@ -1,11 +1,6 @@
-var cursors;
+var cursors, space;
 var run, idle1;
 gameIntroState = {
-
-    preload: function () {
-
-
-    },
 
     create: function () {
 
@@ -17,45 +12,46 @@ gameIntroState = {
         //KEYBINDINGS
 
         cursors = this.game.input.keyboard.createCursorKeys();
+        space = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 
 
         // SPRITE INITIALIZATION
-
-
         BG = this.game.add.sprite(0, 0, 'stagingBG');
         scaffold = this.game.add.sprite(20, 214, 'scaffoldPlatform');
         fire = this.game.add.sprite(174, 120, 'firePlatform');
         player = this.game.add.sprite(16, 200, 'playerSprite');
         car = this.game.add.sprite(20, 348, 'car');
         win = this.game.add.sprite(gameWidth - 50, gameHeight - 256, 'win');
-
         bottomWall = this.game.add.sprite(0, gameHeight - 50);
 
         // SPRITE SETTINGS
         player.scale.setTo(2, 2);
         player.anchor.setTo(.5, .5);
 
-        BG.scale.setTo(2, 2);
-        car.scale.setTo(2, 2);
+        BG.scale.setTo(2);
+        car.scale.setTo(2);
         scaffold.scale.setTo(2);
         fire.scale.setTo(2);
 
         // SPRITE ANIMATIONS
 
-        player.animations.add('playerIdle', [0, 1, 2, 3]);
-        player.animations.add('playerRunRight', [8, 9, 10, 11, 12, 13, 14, 15]);
-        player.animations.add('playerRunLeft', [23, 22, 21, 20, 19, 18, 17, 16]);
-
-        player.animations.play('playerIdle', 2, true);
+        player.animations.add('playerIdle', [0, 1, 2, 3], 2, true);
+        player.animations.add('playerRunRight', [8, 9, 10, 11, 12, 13, 14, 15], 15, true);
+        player.animations.add('playerRunLeft', [23, 22, 21, 20, 19, 18, 17, 16], 15, true);
+        player.animations.add('playerJumpRight', [24, 25, 26, 27, 28, 29], 15, false);
+        player.animations.add('playerJumpLeft', [37, 36, 35, 34, 33, 32], 15, false);
+        player.animations.add('playerJumpLoopRight', [28, 29], 15, true);
+        player.animations.add('playerJumpLoopLeft', [32, 33], 15, true);
+        player.animations.play('playerIdle');
 
 
         // SPRITE PHYSICS/BODY SETTINGS
         this.game.physics.arcade.enable([player, win, bottomWall, fire, scaffold]);
 
         player.body.collideWorldBounds = true;
-        player.body.gravity.y = 1400;
-        player.body.maxVelocity.y = 500;
-        player.body.setSize(30, 50);
+        player.body.gravity.y = 3000;
+        player.body.maxVelocity.y = 3000;
+        player.body.setSize(30, 50, 10, 0);
 
         win.body.allowGravity = false;
         win.body.immovable = true;
@@ -88,38 +84,79 @@ gameIntroState = {
         this.game.physics.arcade.collide(scaffold, player);
         this.game.physics.arcade.collide(fire, player);
 
+
         // X AXIS MOVEMENT
         if (cursors.left.isDown) {
             player.body.velocity.x = -300;
-            player.animations.play('playerRunLeft', 15, true);
-
-
         } else if (cursors.right.isDown) {
             player.body.velocity.x = 300;
-            player.animations.play('playerRunRight', 15, true);
-
         } else {
             player.body.velocity.x = 0;
-            player.animations.play('playerIdle', 2, true);
-
         }
 
+        if (cursors.left.isDown && player.body.touching.down) {
+            player.animations.play('playerRunLeft');
+        } else if (cursors.right.isDown && player.body.touching.down) {
+            player.animations.play('playerRunRight');
+        }
+
+
+
         // JUMP COMMAND
-        if (cursors.up.isDown) {
+        if (cursors.up.isDown || space.isDown) {
+            downFlag = true;
             if (player.body.touching.down && jumpTimer === 0) {
                 // jump is allowed to start
                 jumpTimer = 1;
-                player.body.velocity.y = -400;
-            } else if (jumpTimer > 0 && jumpTimer < 31) {
+                player.body.velocity.y = -600;
+            } else if (jumpTimer > 0 && jumpTimer < 18) {
                 // keep jumping higher
                 jumpTimer++;
-                player.body.velocity.y = -400 + (jumpTimer * 3);
+                player.body.velocity.y = -600 + (jumpTimer * 3);
             }
         } else {
             // jump button not being pressed, reset jump timer
             jumpTimer = 0;
         }
+        if (!player.body.touching.down) {
+            if (cursors.up.isDown && cursors.right.isDown) {
+                player.animations.play('playerJumpRight');
+                player.animations.paused = true;
+                player.animations.paused = false;
+                player.animations.currentAnim.onComplete.add(this.startRightLoop, this);
+            } else if (cursors.up.isDown) {
+                player.animations.play('playerJumpRight');
+                player.animations.paused = true;
+                player.animations.paused = false;
+                player.animations.currentAnim.onComplete.add(this.startRightLoop, this);
 
+            }
+            
+            if (cursors.up.isDown && cursors.left.isDown) {
+                player.animations.play('playerJumpLeft');
+                player.animations.paused = true;
+                player.animations.paused = false;
+                player.animations.currentAnim.onComplete.add(this.startRightLoop, this);
+            } else if (cursors.up.isDown) {
+                player.animations.play('playerJumpRight');
+                player.animations.paused = true;
+                player.animations.paused = false;
+                player.animations.currentAnim.onComplete.add(this.startRightLoop, this);
+
+            }
+        }
+        if (player.body.touching.down && !cursors.left.isDown && !cursors.right.isDown && !cursors.up.isDown && !space.isDown) {
+            player.animations.play('playerIdle');
+        }
+
+
+    },
+
+    startRightLoop: function () {
+        player.play('playerJumpRightLoop');
+    },
+    startLeftLoop: function () {
+        player.play('playerJumpLeftLoop');
     },
 
     render: function () {
@@ -128,7 +165,7 @@ gameIntroState = {
         //        this.game.debug.cameraInfo(this.game.camera, 32, 32);
         //        this.game.debug.spriteCoords(player, 32, 500);
 
-        this.game.debug.body(player);
+        //        this.game.debug.body(player);
     },
 
 
