@@ -9,6 +9,9 @@ gameOverState = {
         background.animations.add('rollin',[0,1,2,3,4,5,6,7,8,9,10,11],15,true);
         background.animations.play('rollin');
         
+        //VERSION
+         b = this.game.add.bitmapText( 5, 5, "PixelOperator", "ALPHA Version 1.0", 16);
+        
          var winLabel =  this.game.add.text(this.game.world.centerX, 20, 'GAME OVER', {font: '50px "V5 Xtender"', fill: '#fff'});
         winLabel.anchor.setTo(.5,0);
         winLabel.align = 'center';

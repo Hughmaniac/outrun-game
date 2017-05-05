@@ -25,6 +25,10 @@ menuState = {
         title.alpha = titleAlpha;
         title.position.y = titlePosition;
         
+        //VERSION
+        b = this.game.add.bitmapText( 5, 5, "PixelOperator", "ALPHA Version 1.0", 16);
+        
+        
         t = this.game.add.bitmapText( this.game.world.centerX, gameHeight - 50, "PixelOperator", "Press SPACEBAR to begin", 32);
         t.align = "center";
         t.anchor.setTo(0.5, 0);

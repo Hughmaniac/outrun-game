@@ -3,6 +3,8 @@ var run, idle1;
 gameIntroState = {
 
     create: function () {
+        //VERSION
+
 
         var nameLabel = this.game.add.text(80, 80, 'Intro', {
             font: '50px Hellovetica',
@@ -22,6 +24,8 @@ gameIntroState = {
         player = this.game.add.sprite(16, 200, 'playerSprite');
         car = this.game.add.sprite(20, 348, 'car');
         bottomWall = this.game.add.sprite(0, gameHeight - 50);
+        //VERSION
+        b = this.game.add.bitmapText(5, 5, "PixelOperator", "ALPHA Version 1.0", 16);
 
         // SPRITE SETTINGS
         player.scale.setTo(2, 2);
@@ -125,7 +129,7 @@ gameIntroState = {
                 player.animations.currentAnim.onComplete.add(this.startRightLoop, this);
 
             }
-            
+
             if (cursors.up.isDown && cursors.left.isDown) {
                 player.animations.play('playerJumpLeft');
                 player.animations.paused = true;
@@ -171,7 +175,7 @@ gameIntroState = {
         menuMusic.stop();
     },
     start: function () {
-        
+
         this.game.state.start('play');
     }
 

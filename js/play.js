@@ -18,6 +18,7 @@ playState = {
         // CAMERA TRANSITION EFFECT
         this.game.camera.flash(0x000000, 1000);
 
+
         // MUSIC LOAD & PLAY
         music = this.game.add.audio('deviance');
         music.loop = true;
@@ -31,10 +32,14 @@ playState = {
         space = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 
         // CALL IN BACKGROUND IMAGE
-        parallax = this.game.add.sprite(0,gameHeight,'mainMenuBG');
+        parallax = this.game.add.sprite(0, gameHeight, 'mainMenuBG');
         parallax.scale.setTo(2);
-        parallax.anchor.setTo(0,1);
+        parallax.anchor.setTo(0, 1);
         background = this.game.add.tileSprite(0, 0, gameWidth, gameHeight, 'climb-bg');
+
+        //VERSION
+        b = this.game.add.bitmapText(5, 5, "PixelOperator", "ALPHA Version 1.0", 16);
+
 
         //GET DIMENSIONS OF PLATFORM BOUNDING BOX
         this.tileWidth = this.game.cache.getImage('platforms').width;
@@ -53,15 +58,15 @@ playState = {
         this.platforms.setAll('body.checkCollision.right', false);
 
         // SPRITE INITIALIZATION
-        player = this.game.add.sprite(16, 0, 'playerSprite');
+        player = this.game.add.sprite(30, 0, 'playerSprite');
         initPlatform = this.game.add.sprite(0, 50, 'platforms');
-        leftWall = this.game.add.sprite(0, 0);
-        rightWall = this.game.add.sprite(gameWidth - 1, 0);
+        leftWall = this.game.add.sprite(0, -200);
+        rightWall = this.game.add.sprite(gameWidth - 1, -200);
         bottomWall = this.game.add.sprite(0, gameHeight);
 
         // SPRITE SETTINGS
         initPlatform.frame = 2;
-        initPlatform.scale.setTo(2);        
+        initPlatform.scale.setTo(2);
         player.anchor.setTo(.5, .5);
         player.scale.setTo(2);
 
@@ -90,10 +95,10 @@ playState = {
 
         // WORLD INVISIBLE WALL PARAMETERS
         leftWall.scale.x = 1;
-        leftWall.scale.y = gameHeight;
+        leftWall.scale.y = gameHeight + 200;
         leftWall.body.immovable = true;
         rightWall.scale.x = 1;
-        rightWall.scale.y = gameHeight;
+        rightWall.scale.y = gameHeight + 200;
         rightWall.body.immovable = true;
         bottomWall.scale.x = gameWidth;
         bottomWall.scale.y = 10;
@@ -124,11 +129,11 @@ playState = {
     },
 
     update: function () {
-        
+
         //BACKGROUND SPEED
         background.tilePosition.y += backgroundSpeed;
-        parallax.position.y += .01;
-        
+        parallax.position.y += .1;
+
         // COLLISION
         this.game.physics.arcade.collide(player, this.platforms);
         this.game.physics.arcade.collide(player, initPlatform);
@@ -185,7 +190,7 @@ playState = {
                 player.animations.currentAnim.onComplete.add(this.startRightLoop, this);
 
             }
-            
+
             if (cursors.up.isDown && cursors.left.isDown) {
                 player.animations.play('playerJumpLeft');
                 player.animations.paused = true;
@@ -285,7 +290,7 @@ playState = {
     // PARAMETERS FOR LEVEL 4
     speed3: function () {
         gameSpeedPlatform = 275;
-        this.timer.delay = 500;
+        this.timer.delay = 700;
         backgroundSpeed = 2.49;
         levelText.text = 'Level: 4';
 
@@ -294,8 +299,8 @@ playState = {
     // PARAMETERS FOR LEVEL 5
     speed4: function () {
         gameSpeedPlatform = 300;
-        this.timer.delay = 400;
-        backgroundSpeed = 2.075;
+        this.timer.delay = 700;
+        backgroundSpeed = 2.716363;
         levelText.text = 'Level: 5';
 
     },
@@ -306,20 +311,18 @@ playState = {
     },
 
     // DEBUGGING PURPOSES
-//    render: function () {
-//
-//        //         // CAMERA DEBUG STATS
-//        //         this.game.debug.cameraInfo(this.game.camera, 32, 32);
-//        //         this.game.debug.spriteCoords(player, 32, 500);
-//
-//        // BOUNDING BOX DEBUG
-//        //        this.game.debug.body(player);
-////        this.game.debug.body(leftWall);
-////        this.game.debug.body(rightWall);
-////        this.platforms.forEach(this.renderGroup, this);
-//
-//
-//    },
+    render: function () {
+        // CAMERA DEBUG STATS
+        //               this.game.debug.cameraInfo(this.game.camera, 32, 32);
+        //               this.game.debug.spriteCoords(player, 32, 500);
+
+
+        //         BOUNDING BOX DEBUG
+        this.game.debug.body(player);
+        this.game.debug.body(leftWall);
+        this.game.debug.body(rightWall);
+        this.platforms.forEach(this.renderGroup, this);
+    },
     renderGroup: function (member) {
         this.game.debug.body(member);
     },
