@@ -58,7 +58,7 @@ playState = {
         this.platforms.setAll('body.checkCollision.right', false);
 
         // SPRITE INITIALIZATION
-        player = this.game.add.sprite(30, 0, 'playerSprite');
+        player = this.game.add.sprite(70, 0, 'playerSprite');
         initPlatform = this.game.add.sprite(0, 50, 'platforms');
         leftWall = this.game.add.sprite(0, -200);
         rightWall = this.game.add.sprite(gameWidth - 1, -200);
@@ -318,10 +318,10 @@ playState = {
 
 
         //         BOUNDING BOX DEBUG
-        this.game.debug.body(player);
-        this.game.debug.body(leftWall);
-        this.game.debug.body(rightWall);
-        this.platforms.forEach(this.renderGroup, this);
+//        this.game.debug.body(player);
+//        this.game.debug.body(leftWall);
+//        this.game.debug.body(rightWall);
+//        this.platforms.forEach(this.renderGroup, this);
     },
     renderGroup: function (member) {
         this.game.debug.body(member);

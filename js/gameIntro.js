@@ -27,6 +27,9 @@ gameIntroState = {
         //VERSION
         b = this.game.add.bitmapText(5, 5, "PixelOperator", "ALPHA Version 1.0", 16);
 
+        c = this.game.add.bitmapText(this.game.world.centerX, 150, "PixelOperator", "^ Jump up to the fire escape ^", 16);
+        c.anchor.setTo(.5, 0);
+
         // SPRITE SETTINGS
         player.scale.setTo(2, 2);
         player.anchor.setTo(.5, .5);
@@ -78,10 +81,10 @@ gameIntroState = {
     update: function () {
         // when player and fire sprite overlap, the win function is called.
         this.game.physics.arcade.collide(player, fire, this.fade, null, this);
+
         this.game.physics.arcade.collide(bottomWall, player);
         this.game.physics.arcade.collide(scaffold, player);
         this.game.physics.arcade.collide(fire, player);
-
 
         // X AXIS MOVEMENT
         if (cursors.left.isDown) {
@@ -117,12 +120,12 @@ gameIntroState = {
             jumpTimer = 0;
         }
         if (!player.body.touching.down) {
-            if (cursors.up.isDown && cursors.right.isDown) {
+            if (cursors.up.isDown && cursors.right.isDown || space.isDown && cursors.right.isDown) {
                 player.animations.play('playerJumpRight');
                 player.animations.paused = true;
                 player.animations.paused = false;
                 player.animations.currentAnim.onComplete.add(this.startRightLoop, this);
-            } else if (cursors.up.isDown) {
+            } else if (cursors.up.isDown || space.isDown) {
                 player.animations.play('playerJumpRight');
                 player.animations.paused = true;
                 player.animations.paused = false;
@@ -130,12 +133,12 @@ gameIntroState = {
 
             }
 
-            if (cursors.up.isDown && cursors.left.isDown) {
+            if (cursors.up.isDown && cursors.left.isDown || space.isDown && cursors.left.isDown) {
                 player.animations.play('playerJumpLeft');
                 player.animations.paused = true;
                 player.animations.paused = false;
                 player.animations.currentAnim.onComplete.add(this.startRightLoop, this);
-            } else if (cursors.up.isDown) {
+            } else if (cursors.up.isDown || space.isDown) {
                 player.animations.play('playerJumpRight');
                 player.animations.paused = true;
                 player.animations.paused = false;
@@ -168,11 +171,14 @@ gameIntroState = {
 
 
     fade: function () {
-        this.game.camera.fade(0x000000, 1000);
-        player.body.immovable = true;
-        player.body.velocity = 0;
-        this.game.time.events.add(Phaser.Timer.SECOND * 1.5, this.start, this).autoDestroy = true;
-        menuMusic.stop();
+        if (player.position.x + 20 > fire.position.x && player.position.y + (player.height / 2) < fire.position.y && player.position.x < fire.position.x + fire.width) {
+            this.game.camera.fade(0x000000, 1000);
+            player.body.immovable = true;
+            player.body.velocity = 0;
+            player.animations.play('playerIdle');
+            this.game.time.events.add(Phaser.Timer.SECOND * 1.5, this.start, this).autoDestroy = true;
+            menuMusic.stop();
+        }
     },
     start: function () {
 

@@ -15,14 +15,16 @@ loadState = {
         this.game.load.image('firePlatform', 'assets/fire-escape-platform.png');
         this.game.load.spritesheet('platforms', 'assets/platforms-spritesheet.png', 80, 47, 3);
         this.game.load.image('climb-bg', 'assets/climb-bg.png');
-        this.game.load.image('title', 'assets/title.png');
+        this.game.load.spritesheet('title', 'assets/title-spritesheet.png', 211, 16, 40);
         this.game.load.spritesheet('mainMenuBG', 'assets/main-menu-spritesheet.png', 256, 420, 2);
         this.game.load.spritesheet('gameOverBG', 'assets/testarossa-BG.png', 256,256,12);
 
         //Load SoundFiles
-        this.game.load.audio('nightcall', 'assets/sound/Nightcall.mp3');
-        this.game.load.audio('deviance','assets/sound/Deviance.mp3')
-        this.game.load.audio('powerMove','assets/sound/PowerMoveAlt.mp3')
+        this.game.load.audio('nightcall', ['assets/sound/Nightcall.ogg', 'assets/sound/Nightcall.m4a', 'assets/sound/Nightcall.wav']);
+        
+       
+        this.game.load.audio('deviance',['assets/sound/Deviance.ogg', 'assets/sound/Deviance.m4a', 'assets/sound/Deviance.wav']);
+        this.game.load.audio('powerMove',['assets/sound/PowerMoveAlt.ogg', 'assets/sound/PowerMoveAlt.m4a', 'assets/sound/PowerMoveAlt.wav']);
         
         // fonts        
         this.game.load.bitmapFont('PressStart', 'assets/PressStart.png', 'assets/PressStart.xml');
